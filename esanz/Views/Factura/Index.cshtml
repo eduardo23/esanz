@@ -1,0 +1,72 @@
+﻿@{ ViewBag.Title = "Listar"; }
+
+<script src="~/scripts/app/factura.js?1.4.0"></script>
+<div class="container">
+    <br />
+    <div class="form-group row">
+        <label for="ddlfForma_pago" class="col-form-label col-sm-2">Forma Pago:</label>
+        <div class="col-sm-2">            
+            <select id="ddlfForma_pago" class="form-control form-control-sm">
+                <option value="0" selected>--Todos--</option>
+            </select>
+            @*@Html.DropDownList("ddlfForma_pago"
+                              , (IEnumerable<SelectListItem>)ViewBag.ddlfForma_pago
+                              , "--Seleccione--"
+                              , new { @class = "form-control", @selected=true }
+                              )*@
+        </div>
+        <label for="txtfFechaIni" class="col-form-label col-sm-1">Fechas:</label>
+        <div class="col-sm-2">
+            <input id="txtfFechaIni" type="date" class="form-control form-control-sm" value='@DateTime.Now.ToString("yyyy-MM-dd")'/>
+        </div>
+        <div class="col-sm-2">
+            <input id="txtfFechaFin" type="date" class="form-control form-control-sm" value='@DateTime.Now.ToString("yyyy-MM-dd")'/>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="txtCliente" class="col-form-label col-sm-2">Cliente</label>
+        <div class="col-sm-7">
+            <input id="txtCliente" type="text" class="form-control form-control-sm" />
+        </div>
+        <div class="col-sm-3">
+                <button id="btnBuscar" class="btn btn-primary btn-sm">Buscar</button>
+                <a id="btnNuevo" class="btn btn-primary btn-sm" href='@Url.Action("verFactura", "Factura", new { id = "0" })'>Nueva Factura</a>
+        </div>
+    </div>
+    
+    <table id="example" class="table table-hover table-striped table-bordered table-sm" cellspacing="0">
+        <thead>
+            <tr>
+                <th>Nro Factura</th>
+                <th>Cliente</th>
+                <th>Fecha</th>
+                <th>Tipo Pago</th>
+                <th>Total</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody class="tbody"></tbody>
+    </table>
+
+    <!-- Modal -->
+    <div class="modal fade" id="modalFactura" tabindex="-1" role="dialog" aria-labelledby="modalFactura" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalCenterTitle">Mantenimiento de Facturas  </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    ...
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-primary">Guardar Cambios</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

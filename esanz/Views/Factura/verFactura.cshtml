@@ -1,0 +1,170 @@
+﻿@model esanz.Models.BEFactura
+@{
+    ViewBag.Title = "verFactura";
+}
+
+<h2>ver Factura</h2>
+<script src="~/scripts/app/verFactura.js?1.3.0"></script>
+<script src="~/scripts/jquery.tabletojson.min.js"></script>
+<div class="container">
+    <div class="form-group row">
+        <label for="num_factura" class="col-md-2 col-form-label">Nro Factura:</label>
+        @*@Html.LabelFor(model=> model.num_factura,htmlAttributes: new { @class= "col-md-2 col-form-label" })*@
+        <div class="form-group col-md-2">
+            @*<input type="text" class="form-control" id="txtNroFactura" placeholder="Nro de Factura" disabled />*@
+            @Html.EditorFor(model=> model.num_factura, new { htmlAttributes = new { @class = "form-control form-control-sm", @placeholder= "Nro de Factura", @disabled="true" } })
+        </div>
+        <div class="form-group col-md-4"></div>
+        <label for="fecha" class="col-md-2 col-form-label">Fecha:</label>
+        <div class="form-group col-md-2">
+            @*<input type="date" class="form-control" id="txtFechaFactura" placeholder="Fecha de Factura" />*@
+            @*@Html.EditorFor(model=> model.fecha)*@
+            @Html.TextBoxFor(model => model.fecha, "{0:yyyy-MM-dd}", new { @type = "date", @class = "form-control form-control-sm" })
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="id_cliente" class="col-md-2 col-form-label">Cliente:</label>
+        <div class="form-group col-md-3">
+            @*<select id="ddlCliente" class="form-control">
+                <option value="0" selected>--Seleccione--</option>
+            </select>*@
+            @*@Html.DropDownList("ddlCliente", (IEnumerable<SelectListItem>)ViewBag.ddlCliente, "--Seleccione--", new { @class = "form-control", @selected=true })*@
+            @Html.DropDownListFor(m => m.id_cliente
+                                  , (IEnumerable<SelectListItem>)ViewBag.ddlCliente
+                                  , "--Seleccione--"
+                                  , new { @class = "form-control form-control-sm" }
+            )
+        </div >
+        <div class="form-group col-md-5">
+        </div>
+        <div class="form-group col-md-2">
+            <button id = "btnNuevoItem" class="btn btn-primary btn-sm" @*data-toggle="modal" data-target="#modalRegistroItem"*@>Nuevo Item</button>
+        </div>
+
+    </div>
+    <div class="form-group row">
+        <table id="tblDetalle" class="table table-hover table-striped table-bordered table-sm">
+            <thead>
+            <th data-override="num_detalle">Item</th>
+            <th data-override="id_producto">id_producto</th>
+            <th>Producto</th>
+            <th data-override="precio">Precio</th>
+            <th data-override="cantidad">Cantidad</th>
+            <th>Sub total</th>
+            <th></th>
+            </thead>
+            <tbody>
+                @*<tr>
+                    <td>1</td>
+                    <td>Leche</td>
+                    <td>5.40</td>
+                    <td>2</td>
+                    <td>10.80</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Arroz</td>
+                    <td>3.00</td>
+                    <td>3</td>
+                    <td>9.00</td>
+                </tr>*@
+
+                @foreach (var item in Model.detalle)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.num_detalle)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.id_producto)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.producto.nombre)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.precio)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.cantidad)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.subtotal)
+                        </td>
+                        <td>
+                            <a href="#" onclick="eliminarItem(this);">Eliminar</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="form-group row">
+        <label for="num_pago" class="col-md-2 col-form-label">Forma Pago:</label>
+        <div class="form-group col-md-3">
+            @*<select id="ddlFormaPago" class="form-control">
+                <option value="0" selected>--Seleccione--</option>
+            </select>*@
+            @*@Html.DropDownList("ddlFormaPago", (IEnumerable<SelectListItem>)ViewBag.ddlFormaPago, "--Seleccione--", new { @class = "form-control", @selected = true })*@
+            @Html.DropDownListFor(m=> m.num_pago
+                                  ,(IEnumerable<SelectListItem>)ViewBag.ddlForma_pago
+                                  , "--Seleccione--"
+                                  , new { @class = "form-control form-control-sm" }
+            )
+        </div>
+        <div class="form-group col-md-3">
+        </div>
+        <label for="txtTotal" class="col-md-2 col-form-label">Total:</label>
+        <div class="form-group col-md-2">
+            <input type = "text" class="form-control form-control-sm" id="txtTotal" placeholder="Total" disabled/>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="form-group col-md-9">
+
+        </div>
+        <div class="form-group col-md-3">
+            <button id="btnGrabarFactura" class="btn btn-primary btn-sm">Grabar Factura</button>
+            @*<button class="btn btn-secondary">Cancelar</button>*@
+            @Html.ActionLink("Cancelar", "Index","Factura", new { @class = "btn btn-secondary btn-sm"})
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="modalRegistroItem" tabindex="-1" role="dialog" aria-labelledby="modalRegistroItem" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalCenterTitle">Nuevo Item</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group row">
+                        <label for="ddlCategoria" class="col-form-label col-md-2">Categoria:</label>
+                        <div class="form-group col-md-2">
+                            <select id="ddlCategoria" class="form-control form-control-sm">
+                                <option value="0" selected>--Seleccione--</option>
+                            </select>
+                        </div>
+                        <label for="ddlProducto" class="col-form-label col-md-2">Producto:</label>
+                        <div class="form-group col-md-2">
+                            <select id="ddlProducto" class="form-control form-control-sm">
+                                <option value="0" selected>--Seleccione--</option>
+                            </select>
+                        </div>
+                        <label for="txtCantidad" class="col-form-label col col-sm-2">Cantidad:</label>
+                        <div class="form-group col-sm-2">
+                            <input type="number" class="form-control form-control-sm" id="txtCantidad" placeholder="Cantidad" />
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Cerrar</button>
+                    <button id="btnAnadirItem" type="button" class="btn btn-primary btn-sm">Añadir Item</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
